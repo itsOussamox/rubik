@@ -3,6 +3,7 @@ CXX	:= c++
 CXXFLAGS := -std=c++11 -Wall -Wextra -Wpedantic -O2
 CPPFLAGS := -Iinclude
 LDFLAGS :=
+GRAPHICS ?= 1
 
 UNAME_S := $(shell uname 2>/dev/null)
 
@@ -17,12 +18,26 @@ RMDIR_R = rm -rf "$(1)"
 RM_F = rm -f "$(1)"
 endif
 
+ifeq ($(GRAPHICS),1)
+CPPFLAGS += -DRUBIK_WITH_GRAPHICS
+ifeq ($(UNAME_S),)
+LDFLAGS += -lglfw3 -lglu32 -lopengl32 -lgdi32
+else
+ifeq ($(UNAME_S),Darwin)
+LDFLAGS += -lglfw -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo
+else
+LDFLAGS += -lglfw -lGL -lGLU
+endif
+endif
+endif
+
 SRC_DIR := src
 OBJ_DIR := build
 
 SRCS := \
 	$(SRC_DIR)/main.cpp \
-	$(SRC_DIR)/CubeSolver.cpp
+	$(SRC_DIR)/CubeSolver.cpp \
+	$(SRC_DIR)/Viewer.cpp
 
 OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 

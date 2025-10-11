@@ -1,4 +1,5 @@
 #include "CubeSolver.hpp"
+#include "Viewer.hpp"
 
 #include <cctype>
 #include <cstdlib>
@@ -62,48 +63,72 @@ bool isValidMoveToken(const std::string& raw) {
     return true;
 }
 
-std::vector<std::string> parseScramble(int argc, char** argv) {
+struct ProgramOptions {
+    bool graphics = false;
+    std::vector<std::string> scramble;
+};
+
+ProgramOptions parseProgramOptions(int argc, char** argv) {
     if (argc < 2) {
         throw std::invalid_argument(
-            "Usage: rubik <scramble moves...>\nExample: rubik \"R2 D' B' D F2\"");
+            "Usage: rubik [-g] <scramble moves...>\nExample: rubik -g \"R2 D' B' D F2\"");
     }
 
+    ProgramOptions options;
     std::ostringstream joined;
+
     for (int i = 1; i < argc; ++i) {
-        if (i > 1) {
+        const std::string arg = argv[i];
+        if (arg == "-g" || arg == "--graphics") {
+            options.graphics = true;
+            continue;
+        }
+
+        if (!joined.str().empty()) {
             joined << ' ';
         }
-        joined << argv[i];
+        joined << arg;
     }
 
-    std::istringstream input(joined.str());
-    std::vector<std::string> tokens;
-    std::string token;
+    if (!joined.str().empty()) {
+        std::istringstream input(joined.str());
+        std::string token;
 
-    while (input >> token) {
-        if (!isValidMoveToken(token)) {
-            throw std::invalid_argument("Invalid move token: " + token);
+        while (input >> token) {
+            if (!isValidMoveToken(token)) {
+                throw std::invalid_argument("Invalid move token: " + token);
+            }
+            options.scramble.push_back(normalizeToken(token));
         }
-        tokens.push_back(normalizeToken(token));
     }
 
-    if (tokens.empty()) {
+    if (options.scramble.empty() && !options.graphics) {
         throw std::invalid_argument("Scramble sequence cannot be empty.");
     }
 
-    return tokens;
+    return options;
 }
 
 } // namespace
 
 int main(int argc, char** argv) {
     try {
-        const std::vector<std::string> scramble = parseScramble(argc, argv);
+        const ProgramOptions options = parseProgramOptions(argc, argv);
 
-        CubeSolver solver;
-        const std::string solution = solver.solve(scramble);
+        if (options.graphics) {
+            Viewer viewer;
+            viewer.run();
+            if (options.scramble.empty()) {
+                return EXIT_SUCCESS;
+            }
+        }
 
-        std::cout << solution << std::endl;
+        if (!options.scramble.empty()) {
+            CubeSolver solver;
+            const std::string solution = solver.solve(options.scramble);
+            std::cout << solution << std::endl;
+        }
+
         return EXIT_SUCCESS;
     } catch (const std::logic_error& err) {
         std::cerr << "Solver not ready: " << err.what() << std::endl;
