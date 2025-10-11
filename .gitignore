@@ -1,0 +1,8 @@
+rubik
+build
+.DS_Store
+.vscode
+*.exe
+*.obj
+*.o
+rubik.txt
