@@ -23,58 +23,128 @@ float clampf(float value, float minValue, float maxValue) {
     return std::max(minValue, std::min(value, maxValue));
 }
 
-void drawCube() {
+void setStickerColor(char face) {
+    switch (face) {
+    case 'U':
+        glColor3f(0.9f, 0.9f, 0.9f);
+        break;
+    case 'D':
+        glColor3f(1.0f, 0.8f, 0.0f);
+        break;
+    case 'F':
+        glColor3f(0.0f, 0.6f, 0.2f);
+        break;
+    case 'B':
+        glColor3f(0.1f, 0.2f, 0.7f);
+        break;
+    case 'L':
+        glColor3f(0.9f, 0.4f, 0.0f);
+        break;
+    case 'R':
+        glColor3f(0.8f, 0.0f, 0.0f);
+        break;
+    default:
+        glColor3f(0.05f, 0.05f, 0.05f);
+        break;
+    }
+}
+
+void drawStickeredFace(float size, char face) {
+    const float half = size * 0.5f;
+    switch (face) {
+    case 'F':
+        glNormal3f(0.0f, 0.0f, 1.0f);
+        glVertex3f(-half, -half, half);
+        glVertex3f(half, -half, half);
+        glVertex3f(half, half, half);
+        glVertex3f(-half, half, half);
+        break;
+    case 'B':
+        glNormal3f(0.0f, 0.0f, -1.0f);
+        glVertex3f(half, -half, -half);
+        glVertex3f(-half, -half, -half);
+        glVertex3f(-half, half, -half);
+        glVertex3f(half, half, -half);
+        break;
+    case 'L':
+        glNormal3f(-1.0f, 0.0f, 0.0f);
+        glVertex3f(-half, -half, -half);
+        glVertex3f(-half, -half, half);
+        glVertex3f(-half, half, half);
+        glVertex3f(-half, half, -half);
+        break;
+    case 'R':
+        glNormal3f(1.0f, 0.0f, 0.0f);
+        glVertex3f(half, -half, half);
+        glVertex3f(half, -half, -half);
+        glVertex3f(half, half, -half);
+        glVertex3f(half, half, half);
+        break;
+    case 'U':
+        glNormal3f(0.0f, 1.0f, 0.0f);
+        glVertex3f(-half, half, half);
+        glVertex3f(half, half, half);
+        glVertex3f(half, half, -half);
+        glVertex3f(-half, half, -half);
+        break;
+    case 'D':
+        glNormal3f(0.0f, -1.0f, 0.0f);
+        glVertex3f(-half, -half, -half);
+        glVertex3f(half, -half, -half);
+        glVertex3f(half, -half, half);
+        glVertex3f(-half, -half, half);
+        break;
+    default:
+        break;
+    }
+}
+
+void drawCubie(int xi, int yi, int zi, float size) {
+    glPushMatrix();
+    const float spacing = size * 1.05f;
+    glTranslatef(xi * spacing, yi * spacing, zi * spacing);
+
     glBegin(GL_QUADS);
 
-    // Front face (Green)
-    glColor3f(0.0f, 0.6f, 0.2f);
-    glNormal3f(0.0f, 0.0f, 1.0f);
-    glVertex3f(-0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, 0.5f);
+    const bool onFront = zi == 1;
+    const bool onBack = zi == -1;
+    const bool onRight = xi == 1;
+    const bool onLeft = xi == -1;
+    const bool onUp = yi == 1;
+    const bool onDown = yi == -1;
 
-    // Back face (Blue)
-    glColor3f(0.1f, 0.2f, 0.7f);
-    glNormal3f(0.0f, 0.0f, -1.0f);
-    glVertex3f(0.5f, -0.5f, -0.5f);
-    glVertex3f(-0.5f, -0.5f, -0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
+    setStickerColor(onFront ? 'F' : 0);
+    drawStickeredFace(size, 'F');
 
-    // Left face (Orange)
-    glColor3f(0.9f, 0.4f, 0.0f);
-    glNormal3f(-1.0f, 0.0f, 0.0f);
-    glVertex3f(-0.5f, -0.5f, -0.5f);
-    glVertex3f(-0.5f, -0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, 0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
+    setStickerColor(onBack ? 'B' : 0);
+    drawStickeredFace(size, 'B');
 
-    // Right face (Red)
-    glColor3f(0.8f, 0.0f, 0.0f);
-    glNormal3f(1.0f, 0.0f, 0.0f);
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(0.5f, -0.5f, -0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
+    setStickerColor(onLeft ? 'L' : 0);
+    drawStickeredFace(size, 'L');
 
-    // Top face (White)
-    glColor3f(0.9f, 0.9f, 0.9f);
-    glNormal3f(0.0f, 1.0f, 0.0f);
-    glVertex3f(-0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, 0.5f);
-    glVertex3f(0.5f, 0.5f, -0.5f);
-    glVertex3f(-0.5f, 0.5f, -0.5f);
+    setStickerColor(onRight ? 'R' : 0);
+    drawStickeredFace(size, 'R');
 
-    // Bottom face (Yellow)
-    glColor3f(1.0f, 0.8f, 0.0f);
-    glNormal3f(0.0f, -1.0f, 0.0f);
-    glVertex3f(-0.5f, -0.5f, -0.5f);
-    glVertex3f(0.5f, -0.5f, -0.5f);
-    glVertex3f(0.5f, -0.5f, 0.5f);
-    glVertex3f(-0.5f, -0.5f, 0.5f);
+    setStickerColor(onUp ? 'U' : 0);
+    drawStickeredFace(size, 'U');
+
+    setStickerColor(onDown ? 'D' : 0);
+    drawStickeredFace(size, 'D');
 
     glEnd();
+
+    glPopMatrix();
+}
+
+void drawCube() {
+    const float cubieSize = 0.28f;
+    for (int y = -1; y <= 1; ++y) {
+        for (int z = -1; z <= 1; ++z) {
+            for (int x = -1; x <= 1; ++x) {
+                drawCubie(x, y, z, cubieSize);
+            }
+        }
+    }
 }
 
 } // namespace
@@ -107,7 +177,7 @@ void Viewer::run() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
-
+    glfwWindowHint(GLFW_SAMPLES, 1);
     GLFWwindow* window = glfwCreateWindow(800, 600, "Rubik Viewer", nullptr, nullptr);
     if (!window) {
         throw std::runtime_error("Failed to create GLFW window");
@@ -122,7 +192,10 @@ void Viewer::run() {
     glfwSetScrollCallback(window, Viewer::scrollCallback);
 
     glEnable(GL_DEPTH_TEST);
-
+    glEnable(GL_MULTISAMPLE);
+    glShadeModel(GL_SMOOTH);
+    // glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
     while (!glfwWindowShouldClose(window)) {
         int width = 0;
         int height = 0;
@@ -134,7 +207,7 @@ void Viewer::run() {
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(45.0, aspect, 0.1, 100.0);
+        gluPerspective(45.0, aspect, 0.5, 50.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
