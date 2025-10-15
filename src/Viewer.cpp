@@ -20,6 +20,14 @@
 
 namespace {
 
+struct MoveAxis {
+    char axis = 0; // 'X', 'Y', 'Z' for rotation axis
+    int layerCoord = 0; // The coordinate of the layer to be rotated (-1, 0, 1)
+    float ax = 0.0f;
+    float ay = 0.0f;
+    float az = 0.0f;
+};
+
 constexpr float kDegToRad = 3.14159265358979323846f / 180.0f;
 
 float clampf(float value, float minValue, float maxValue) {
@@ -148,14 +156,6 @@ MoveInfo parseMove(const std::string& move) {
     info.valid = false;
     return info;
 }
-
-struct MoveAxis {
-    char axis = 0;
-    int layerCoord = 0;
-    float ax = 0.0f;
-    float ay = 0.0f;
-    float az = 0.0f;
-};
 
 MoveAxis axisForFace(char face) {
     MoveAxis axis;
@@ -787,30 +787,30 @@ int Viewer::CubeState::indexFromPosition(FaceIndex face, int px, int py, int pz)
     int col = 0;
 
     switch (face) {
-    case Up:
-        row = pz + 1;
-        col = px + 1;
-        break;
-    case Down:
-        row = 1 - pz;
-        col = px + 1;
-        break;
-    case Front:
-        row = 1 - py;
-        col = px + 1;
-        break;
-    case Back:
-        row = 1 - py;
-        col = 1 - px;
-        break;
-    case Left:
-        row = 1 - py;
-        col = pz + 1;
-        break;
-    case Right:
-        row = 1 - py;
-        col = 1 - pz;
-        break;
+        case Up:
+            row = pz + 1;
+            col = px + 1;
+            break;
+        case Down:
+            row = 1 - pz;
+            col = px + 1;
+            break;
+        case Front:
+            row = 1 - py;
+            col = px + 1;
+            break;
+        case Back:
+            row = 1 - py;
+            col = 1 - px;
+            break;
+        case Left:
+            row = 1 - py;
+            col = pz + 1;
+            break;
+        case Right:
+            row = 1 - py;
+            col = 1 - pz;
+            break;
     }
 
     return indexFromRowCol(row, col);
