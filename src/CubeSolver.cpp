@@ -2,9 +2,11 @@
 
 #include <stdexcept>
 
-CubeSolver::CubeSolver() = default;
+CubeSolver::CubeSolver(){};
 
-CubeSolver::~CubeSolver() = default;
+CubeSolver::~CubeSolver() {
+    // Clean up resources if needed
+};
 
 std::string CubeSolver::solve(const std::vector<std::string>& scramble) const {
     (void)scramble;

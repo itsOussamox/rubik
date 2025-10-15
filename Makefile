@@ -37,6 +37,7 @@ OBJ_DIR := build
 SRCS := \
 	$(SRC_DIR)/main.cpp \
 	$(SRC_DIR)/CubeSolver.cpp \
+	$(SRC_DIR)/Cube.cpp \
 	$(SRC_DIR)/Viewer.cpp
 
 OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
