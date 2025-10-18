@@ -1,3 +1,10 @@
+#define RUBIK_DISPLAY \
+"  ____  _   _ ____ ___ _  __\n" \
+" |  _ \\| | | | __ )_ _| |/ /\n" \
+" | |_) | | | |  _ \\| || ' / \n" \
+" |  _ <| |_| | |_) | || . \\ \n" \
+" |_| \\_\\\\___/|____/___|_|\\_\\"
+
 #include "CubeSolver.hpp"
 #include "Viewer.hpp"
 
@@ -113,6 +120,7 @@ ProgramOptions parseProgramOptions(int argc, char** argv) {
 
 int main(int argc, char** argv) {
     try {
+        std::cout << RUBIK_DISPLAY << std::endl;
         const ProgramOptions options = parseProgramOptions(argc, argv);
 
         if (options.graphics) {
@@ -125,18 +133,22 @@ int main(int argc, char** argv) {
 
         if (!options.scramble.empty()) {
             CubeSolver solver;
-            const std::string solution = solver.solve(options.scramble);
-            std::cout << solution << std::endl;
+            // const std::string solution = solver.solve(options.scramble); // not yet.
+            // std::cout << solution << std::endl;
+            
         }
 
         return EXIT_SUCCESS;
-    } catch (const std::logic_error& err) {
-        std::cerr << "Solver not ready: " << err.what() << std::endl;
-        return EXIT_FAILURE;
-    } catch (const std::invalid_argument& err) {
+    } 
+    catch (const std::invalid_argument& err) {
         std::cerr << "Input error: " << err.what() << std::endl;
         return EXIT_FAILURE;
-    } catch (const std::exception& err) {
+    } 
+    catch (const std::logic_error& err) {
+        std::cerr << "Solver not ready: " << err.what() << std::endl;
+        return EXIT_FAILURE;
+    } 
+    catch (const std::exception& err) {
         std::cerr << "Unexpected error: " << err.what() << std::endl;
         return EXIT_FAILURE;
     }
