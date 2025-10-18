@@ -32,6 +32,20 @@ struct Edge {
 class Cube {
     std::array<Corner, 8> corners;  // corners[slot] = {cubie_id, orientation}
     std::array<Edge, 12> edges;     // edges[slot]   = {cubie_id, orientation}
+    static uint8_t twist_corner(uint8_t ori, uint8_t delta);
+    static uint8_t flip_edge(uint8_t ori, uint8_t flip);
+    static void cycle_corners(std::array<Corner, 8>& corners,
+                              const std::array<uint8_t, 4>& idx,
+                              const std::array<uint8_t, 4>& twists);
+    static void cycle_edges(std::array<Edge, 12>& edges,
+                            const std::array<uint8_t, 4>& idx,
+                            const std::array<uint8_t, 4>& flips);
+    static void cycle_corners_inverse(std::array<Corner, 8>& corners,
+                                      const std::array<uint8_t, 4>& idx,
+                                      const std::array<uint8_t, 4>& twists);
+    static void cycle_edges_inverse(std::array<Edge, 12>& edges,
+                                    const std::array<uint8_t, 4>& idx,
+                                    const std::array<uint8_t, 4>& flips);
 public:
     Cube();
     void print_state() const;

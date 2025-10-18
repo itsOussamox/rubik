@@ -13,18 +13,17 @@ Cube::Cube() {
     }
 };
 
-namespace {
-inline uint8_t twist_corner(uint8_t ori, uint8_t delta) {
-    return static_cast<uint8_t>((ori + delta) % 3);
+uint8_t Cube::twist_corner(uint8_t ori, uint8_t delta) {
+    return (ori + delta) % 3;
 }
 
-inline uint8_t flip_edge(uint8_t ori, uint8_t flip) {
-    return static_cast<uint8_t>(ori ^ (flip & 0x1));
+uint8_t Cube::flip_edge(uint8_t ori, uint8_t flip) {
+    return flip ? (1 - ori) : ori;
 }
 
-void cycle_corners(std::array<Corner, 8>& corners,
-                   const std::array<uint8_t, 4>& idx,
-                   const std::array<uint8_t, 4>& twists) {
+void Cube::cycle_corners(std::array<Corner, 8>& corners,
+                         const std::array<uint8_t, 4>& idx,
+                         const std::array<uint8_t, 4>& twists) {
     const Corner c0 = corners[idx[0]];
     const Corner c1 = corners[idx[1]];
     const Corner c2 = corners[idx[2]];
@@ -36,9 +35,9 @@ void cycle_corners(std::array<Corner, 8>& corners,
     corners[idx[3]] = {c0.pos, twist_corner(c0.ori, twists[3])};
 }
 
-void cycle_edges(std::array<Edge, 12>& edges,
-                 const std::array<uint8_t, 4>& idx,
-                 const std::array<uint8_t, 4>& flips) {
+void Cube::cycle_edges(std::array<Edge, 12>& edges,
+                       const std::array<uint8_t, 4>& idx,
+                       const std::array<uint8_t, 4>& flips) {
     const Edge e0 = edges[idx[0]];
     const Edge e1 = edges[idx[1]];
     const Edge e2 = edges[idx[2]];
@@ -50,9 +49,9 @@ void cycle_edges(std::array<Edge, 12>& edges,
     edges[idx[3]] = {e0.pos, flip_edge(e0.ori, flips[3])};
 }
 
-void cycle_corners_inverse(std::array<Corner, 8>& corners,
-                           const std::array<uint8_t, 4>& idx,
-                           const std::array<uint8_t, 4>& twists) {
+void Cube::cycle_corners_inverse(std::array<Corner, 8>& corners,
+                                 const std::array<uint8_t, 4>& idx,
+                                 const std::array<uint8_t, 4>& twists) {
     const Corner c0 = corners[idx[0]];
     const Corner c1 = corners[idx[1]];
     const Corner c2 = corners[idx[2]];
@@ -64,9 +63,9 @@ void cycle_corners_inverse(std::array<Corner, 8>& corners,
     corners[idx[3]] = {c2.pos, twist_corner(c2.ori, (3 - twists[2]) % 3)};
 }
 
-void cycle_edges_inverse(std::array<Edge, 12>& edges,
-                         const std::array<uint8_t, 4>& idx,
-                         const std::array<uint8_t, 4>& flips) {
+void Cube::cycle_edges_inverse(std::array<Edge, 12>& edges,
+                               const std::array<uint8_t, 4>& idx,
+                               const std::array<uint8_t, 4>& flips) {
     const Edge e0 = edges[idx[0]];
     const Edge e1 = edges[idx[1]];
     const Edge e2 = edges[idx[2]];
@@ -76,7 +75,6 @@ void cycle_edges_inverse(std::array<Edge, 12>& edges,
     edges[idx[1]] = {e0.pos, flip_edge(e0.ori, flips[0])};
     edges[idx[2]] = {e1.pos, flip_edge(e1.ori, flips[1])};
     edges[idx[3]] = {e2.pos, flip_edge(e2.ori, flips[2])};
-}
 }
 
 void Cube::print_state() const {
