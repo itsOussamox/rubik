@@ -6,12 +6,12 @@ CubeSolver::CubeSolver() : m_cube() {
     std::cout << "Solved:\n";
     m_cube.print_state();
 
-    m_cube.moveR();
-    std::cout << "\nAfter R:\n";
+    m_cube.moveR2();
+    std::cout << "\nAfter R2:\n";
     m_cube.print_state();
 
-    m_cube.moveRPrime();
-    std::cout << "\nAfter R':\n";
+    m_cube.moveR2();
+    std::cout << "\nAfter R2:\n";
     m_cube.print_state();
 };
 
