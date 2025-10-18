@@ -42,7 +42,7 @@ SRCS := \
 
 OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
-.PHONY: all clean fclean re debug dirs
+.PHONY: all clean fclean re debug dirs run run_g
 
 all: $(NAME)
 
@@ -54,6 +54,12 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 dirs:
 	@$(call MKDIR_P,$(OBJ_DIR))
+
+run: $(NAME)
+	./$(NAME) "R2 D' B' D F2"
+
+run_g: $(NAME)
+	./$(NAME) -g "R2 D' B' D F2" # Run with graphics
 
 clean:
 	@$(call RMDIR_R,$(OBJ_DIR))
