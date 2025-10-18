@@ -2,10 +2,22 @@
 
 #include <stdexcept>
 
-CubeSolver::CubeSolver(){};
+CubeSolver::CubeSolver() : m_cube() {
+    std::cout << "Solved:\n";
+    m_cube.print_state();
+
+    m_cube.moveR();
+    std::cout << "\nAfter R:\n";
+    m_cube.print_state();
+
+    m_cube.moveRPrime();
+    std::cout << "\nAfter R':\n";
+    m_cube.print_state();
+};
 
 CubeSolver::~CubeSolver() {
-    // Clean up resources if needed
+
+    // No dynamic memory to free
 };
 
 std::string CubeSolver::solve(const std::vector<std::string>& scramble) const {
